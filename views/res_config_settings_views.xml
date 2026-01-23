@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_sl" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.sl</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Sales Layer" string="Sales Layer" name="sales_layer">
+                    <block title="Configuración Sales Layer">
+                        <setting string="API Credentials">
+                            <field name="sl_api_url"/>
+                            <field name="sl_api_token" password="True"/>
+                        </setting>
+                        <setting string="Webhook Security">
+                            <field name="sl_webhook_token" password="True"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
