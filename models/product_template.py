@@ -172,13 +172,23 @@ class ProductTemplate(models.Model):
         
         if not api_key or not base_url:
             self.write({
-                'sl_status': 'error',
-                'sl_last_error': _("Falta configuración de API Key o Base URL.")
+                'sl_sync_status': 'error',
+                'sl_error_log': _("Falta configuración de API Key o Base URL.")
             })
             return
 
-        # API 2.0 Endpoint for Products
-        # OData v4.01: POST for creation, PATCH for update
+        # 1. Attribute Check: Valida que los atributos existan o se puedan identificar correctamente
+        if self.product_variant_count > 1:
+            for line in self.attribute_line_ids:
+                if not line.attribute_id.name:
+                    self.write({
+                        'sl_sync_status': 'error',
+                        'sl_error_log': _("Atributo sin nombre detectado. Abortando.")
+                    })
+                    return
+                _logger.info("Checked attribute: %s for product %s", line.attribute_id.name, self.name)
+
+        # Continua con el flujo normal...
         base_url = base_url.rstrip('/')
         endpoint = f"{base_url}/Products"
         
