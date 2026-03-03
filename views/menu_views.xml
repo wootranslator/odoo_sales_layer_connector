@@ -4,7 +4,7 @@
     <record id="action_product_template_sl" model="ir.actions.act_window">
         <field name="name">Products for Sales Layer</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('is_sl_sync', '=', True)]</field>
         <field name="context">{'default_is_sl_sync': True}</field>
         <field name="help" type="html">
@@ -41,6 +41,7 @@
               name="Settings" 
               parent="menu_sl_config" 
               action="base_setup.action_general_configuration"
+              context="{'module': 'odoo_sales_layer_connector'}"
               groups="base.group_system"
               sequence="10"/>
 </odoo>
