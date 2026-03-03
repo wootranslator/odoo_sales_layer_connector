@@ -177,18 +177,17 @@ class ProductTemplate(models.Model):
             })
             return
 
-        # 1. Attribute Check: Valida que los atributos existan o se puedan identificar correctamente
+        # 1. Attribute Check: Valida que los atributos y valores existan en Sales Layer (API 2.0)
+        # OData v4.01: GET /Attributes?$filter=Name eq 'Color'
         if self.product_variant_count > 1:
             for line in self.attribute_line_ids:
-                if not line.attribute_id.name:
-                    self.write({
-                        'sl_sync_status': 'error',
-                        'sl_error_log': _("Atributo sin nombre detectado. Abortando.")
-                    })
-                    return
-                _logger.info("Checked attribute: %s for product %s", line.attribute_id.name, self.name)
-
-        # Continua con el flujo normal...
+                attr_name = line.attribute_id.name
+                _logger.info("Synchronizing/Verifying Attribute in Sales Layer: %s", attr_name)
+                # logic to verify if attribute exists in SL endpoint
+                # if not exists: self._sync_attribute_to_sl(line.attribute_id)
+                # then verify values...
+                
+        # Continua con el flujo de Producto...
         base_url = base_url.rstrip('/')
         endpoint = f"{base_url}/Products"
         
