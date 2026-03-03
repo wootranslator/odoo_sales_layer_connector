@@ -33,7 +33,7 @@
                         </div>
                     </setting>
                 </block>
-                <block title="Field Mapping" id="sl_field_mapping_block">
+                <block title="Field Export Mapping (Odoo -> Sales Layer)" id="sl_field_export_mapping_block">
                     <setting string="Data Fields" help="Toggle which fields are sent to Sales Layer">
                         <div class="content-group">
                             <div class="row">
@@ -110,6 +110,90 @@
                                         </div>
                                         <div class="o_setting_right_pane">
                                             <label for="sl_sync_quantity"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+                <block title="Field Import Mapping (Sales Layer -> Odoo)" id="sl_field_import_mapping_block">
+                    <setting string="Data Fields" help="Toggle which fields are updated from Sales Layer">
+                        <div class="content-group">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_sku"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_sku"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_ean"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_ean"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_images"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_images"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_categories"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_categories"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_dimensions"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_dimensions"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_descriptions"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_descriptions"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_prices"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_prices"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_attributes"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_attributes"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_import_quantity"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_import_quantity"/>
                                         </div>
                                     </div>
                                 </div>
