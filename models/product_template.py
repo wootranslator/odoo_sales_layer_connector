@@ -46,7 +46,16 @@ class ProductTemplate(models.Model):
             if not record.name or not record.default_code:
                 record.write({
                     'sl_sync_status': 'error',
-                    'sl_error_log': _("Faltan campos obligatorios: Nombre o Referencia Interna.")
+                    'sl_error_log': _("Faltan campos obligatorios: Nombre o Referencia Interna (SKU).")
+                })
+                continue
+            
+            # Validación de EAN si está el toggle activo o como campo mínimo solicitado
+            params = record.env['ir.config_parameter'].sudo()
+            if params.get_param('odoo_sales_layer_connector.sl_sync_ean') and not record.barcode:
+                record.write({
+                    'sl_sync_status': 'error',
+                    'sl_error_log': _("El campo EAN/Barcode es obligatorio para la sincronización configurada.")
                 })
                 continue
                 
