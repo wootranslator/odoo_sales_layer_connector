@@ -8,129 +8,17 @@
             <xpath expr="//form" position="inside">
                 <app data-string="Sales Layer" string="Sales Layer" name="odoo_sales_layer_connector" groups="stock.group_stock_manager">
                     <block title="API Configuration" id="sl_connector_setting_block">
-                        <setting string="Credentials" help="Configure your Sales Layer API credentials">
-                            <div class="content-group">
-                                <div class="row mt16">
-                                    <label for="sl_api_key" class="col-lg-3 o_light_label"/>
-                                    <field name="sl_api_key" password="True"/>
-                                </div>
-                                <div class="row mt8">
-                                    <label for="sl_secret_key" class="col-lg-3 o_light_label"/>
-                                    <field name="sl_secret_key" password="True"/>
-                                </div>
-                                <div class="row mt8">
-                                    <label for="sl_connector_id" class="col-lg-3 o_light_label"/>
-                                    <field name="sl_connector_id"/>
-                                </div>
-                                <div class="row mt8">
-                                    <label for="sl_base_url" class="col-lg-3 o_light_label"/>
-                                    <field name="sl_base_url"/>
-                                </div>
-                            </div>
-                        </setting>
-                        <setting string="Sync Settings" help="Configure how and what data is synced">
-                            <div class="content-group">
-                                <div class="row mt16">
-                                    <label for="sl_sync_trigger" class="col-lg-3 o_light_label"/>
-                                    <field name="sl_sync_trigger"/>
-                                </div>
-                            </div>
+                        <setting string="Credentials">
+                            <field name="sl_api_key" password="True"/>
+                            <field name="sl_secret_key" password="True"/>
+                            <field name="sl_connector_id"/>
+                            <field name="sl_base_url"/>
                         </setting>
                     </block>
-                    <block title="Field Export Mapping (Odoo -> Sales Layer)" id="sl_field_export_mapping_block">
-                        <setting string="Data Fields" help="Toggle which fields are sent to Sales Layer">
-                            <div class="content-group">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_sku"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_sku"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_ean"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_ean"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_images"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_images"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_categories"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_categories"/></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_dimensions"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_dimensions"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_descriptions"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_descriptions"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_prices"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_prices"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_attributes"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_attributes"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_sync_quantity"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_sync_quantity"/></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </setting>
-                    </block>
-                    <block title="Field Import Mapping (Sales Layer -> Odoo)" id="sl_field_import_mapping_block">
-                        <setting string="Data Fields" help="Toggle which fields are updated from Sales Layer">
-                            <div class="content-group">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_sku"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_sku"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_ean"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_ean"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_images"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_images"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_categories"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_categories"/></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_dimensions"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_dimensions"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_descriptions"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_descriptions"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_prices"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_prices"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_attributes"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_attributes"/></div>
-                                        </div>
-                                        <div class="o_setting_box">
-                                            <div class="o_setting_left_pane"><field name="sl_import_quantity"/></div>
-                                            <div class="o_setting_right_pane"><label for="sl_import_quantity"/></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <block title="Export Mapping">
+                        <setting string="Fields">
+                            <field name="sl_sync_sku"/>
+                            <field name="sl_sync_ean"/>
                         </setting>
                     </block>
                 </app>

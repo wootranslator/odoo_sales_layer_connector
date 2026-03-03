@@ -8,8 +8,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
-        'views/product_template_views.xml',
-        'views/menu_views.xml',
+        # 'views/product_template_views.xml',
+        # 'views/menu_views.xml',
     ],
     'installable': True,
     'application': True,
