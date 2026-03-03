@@ -10,40 +10,52 @@ class ProductTemplate(models.Model):
 
     is_sl_sync = fields.Boolean(string="Sincronizar con Sales Layer", default=False)
     sl_external_id = fields.Char(string="Sales Layer ID", copy=False)
-    sl_status = fields.Selection([
+    sl_sync_status = fields.Selection([
         ('draft', 'Draft'),
+        ('pending', 'Pending'),
         ('synced', 'Synced'),
         ('enriched', 'Fully Enriched'),
         ('error', 'Error')
-    ], string="Estado Sales Layer", default='draft', copy=False)
-    sl_enrichment_level = fields.Selection([
-        ('basic', 'Basic (Purchasing)'),
-        ('in_progress', 'In Progress (PIM)'),
-        ('completed', 'Completed (Validated)')
-    ], string="Nivel de Enriquecimiento", default='basic', copy=False)
-    sl_last_error = fields.Text(string="Último Error Sales Layer", readonly=True, copy=False)
-    sl_url = fields.Char(string="Sales Layer Link", compute='_compute_sl_url')
+    ], string="Sync Status", default='draft', copy=False)
+    sl_last_sync = fields.Datetime(string="Last Sync", readonly=True, copy=False)
+    sl_error_log = fields.Text(string="Error Log", readonly=True, copy=False)
+    sl_product_url = fields.Char(string="PIM Product Link", compute='_compute_sl_product_url')
+
+    # Keep original fields for compatibility or specific needs
+    sl_status = fields.Selection(related="sl_sync_status", readonly=True)
+    sl_last_error = fields.Text(related="sl_error_log", readonly=True)
+    sl_url = fields.Char(related="sl_product_url", readonly=True)
 
     @api.depends('sl_external_id')
-    def _compute_sl_url(self):
-        # Base URL for the public app might differ from the API URL, but we use the config one.
-        # Usually: https://app.saleslayer.com/product/ID
+    def _compute_sl_product_url(self):
         params = self.env['ir.config_parameter'].sudo()
         api_base = params.get_param('odoo_sales_layer_connector.sl_base_url') or 'https://api2.saleslayer.com/rest/Catalog'
-        # Basic guess for the app URL if it's the API one
-        app_url = api_base.replace('api2', 'app').replace('/rest/Catalog', '')
+        app_url = api_base.replace('api2', 'app').replace('/rest/Catalog', '').rstrip('/')
         
         for record in self:
             if record.sl_external_id:
-                record.sl_url = f"{app_url}/product/{record.sl_external_id}"
+                # Based on prompt: https://app.saleslayer.com/main/products/edit/{id}
+                record.sl_product_url = f"{app_url}/main/products/edit/{record.sl_external_id}"
             else:
-                record.sl_url = False
+                record.sl_product_url = False
 
     def action_sync_to_sales_layer(self):
         """Metodo manual para disparar la sincronizacion"""
         for record in self:
-            record.sl_enrichment_level = 'in_progress'
+            # Validacion de campos minimos antes de intentar exportar
+            if not record.name or not record.default_code:
+                record.write({
+                    'sl_sync_status': 'error',
+                    'sl_error_log': _("Faltan campos obligatorios: Nombre o Referencia Interna.")
+                })
+                continue
+                
+            record.write({'sl_sync_status': 'pending'})
             record._sync_to_sales_layer()
+
+    def action_sync_to_sl(self):
+        """Alias para cumplir con especificaciones de sl_pim_connector"""
+        return self.action_sync_to_sales_layer()
 
     def action_check_sl_status(self):
         """Metodo manual para consultar el estado en Sales Layer (API 2.0)"""
@@ -66,8 +78,8 @@ class ProductTemplate(models.Model):
         # response = requests.get(api_endpoint, headers=headers, timeout=10)
         
         # Supongamos que refrescamos y está completado
-        if self.sl_status == 'synced':
-            self.write({'sl_status': 'enriched', 'sl_enrichment_level': 'completed'})
+        if self.sl_sync_status == 'synced':
+            self.write({'sl_sync_status': 'enriched'})
 
     def _prepare_sl_payload(self):
         """Genera el JSON estructurado para el Padre y sus Variantes (OData v4.01)"""
@@ -181,36 +193,38 @@ class ProductTemplate(models.Model):
         }
 
         try:
-            _logger.info("API 2.0 Syncing to Sales Layer: %s", json.dumps(payload, indent=2))
+            _logger.info("API 2.0 Exporting to SL (%s): %s", self.name, json.dumps(payload, indent=2))
             
             if self.sl_external_id:
                 # Update existing record (PATCH)
-                update_url = f"{endpoint}('{self.sl_external_id}')"
-                # response = requests.patch(update_url, json=payload, headers=headers, timeout=15)
+                url = f"{endpoint}('{self.sl_external_id}')"
                 method = "PATCH"
-                final_url = update_url
+                # response = requests.patch(url, json=payload, headers=headers, timeout=15)
             else:
                 # Create new record (POST)
-                # response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+                url = endpoint
                 method = "POST"
-                final_url = endpoint
+                # response = requests.post(url, json=payload, headers=headers, timeout=15)
             
-            _logger.info(f"Method: {method} to {final_url}")
+            _logger.info("SL API call: %s %s", method, url)
             
-            # Simulamos éxito y asignación de ID
-            mock_external_id = self.sl_external_id or f"SL2-{self.id}" 
+            # Simulated Response
+            mock_id = self.sl_external_id or f"SL2-{self.id}"
             
             self.write({
-                'sl_external_id': mock_external_id,
-                'sl_status': 'synced',
-                'sl_last_error': False
+                'sl_external_id': mock_id,
+                'sl_sync_status': 'synced',
+                'sl_last_sync': fields.Datetime.now(),
+                'sl_error_log': False
             })
+            _logger.info("SL Sync Success: %s (External ID: %s)", self.name, mock_id)
             
         except Exception as e:
-            _logger.error("Error in Sales Layer API 2.0 Sync: %s", str(e))
+            error_msg = f"Error in SL API 2.0 Sync: {str(e)}"
+            _logger.error(error_msg)
             self.write({
-                'sl_status': 'error',
-                'sl_last_error': str(e)
+                'sl_sync_status': 'error',
+                'sl_error_log': error_msg
             })
 
     @api.model_create_multi

@@ -16,6 +16,10 @@
                                     <field name="sl_api_key" password="True"/>
                                 </div>
                                 <div class="row mt8">
+                                    <label for="sl_secret_key" class="col-lg-3 o_light_label"/>
+                                    <field name="sl_secret_key" password="True"/>
+                                </div>
+                                <div class="row mt8">
                                     <label for="sl_connector_id" class="col-lg-3 o_light_label"/>
                                     <field name="sl_connector_id"/>
                                 </div>
