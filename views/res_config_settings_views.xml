@@ -24,11 +24,87 @@
                             </div>
                         </div>
                     </setting>
-                    <setting string="Sync Settings" help="Configure how products are synced">
+                    <setting string="Sync Settings" help="Configure how and what data is synced">
                         <div class="content-group">
                             <div class="row mt16">
                                 <label for="sl_sync_trigger" class="col-lg-3 o_light_label"/>
                                 <field name="sl_sync_trigger"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+                <block title="Field Mapping" id="sl_field_mapping_block">
+                    <setting string="Data Fields" help="Toggle which fields are sent to Sales Layer">
+                        <div class="content-group">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_sku"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_sku"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_ean"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_ean"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_images"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_images"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_categories"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_categories"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_dimensions"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_dimensions"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_descriptions"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_descriptions"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_prices"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_prices"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_box">
+                                        <div class="o_setting_left_pane">
+                                            <field name="sl_sync_attributes"/>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label for="sl_sync_attributes"/>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </setting>

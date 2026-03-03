@@ -73,16 +73,28 @@ class ProductTemplate(models.Model):
         """Genera el JSON estructurado para el Padre y sus Variantes (OData v4.01)"""
         self.ensure_one()
         
+        params = self.env['ir.config_parameter'].sudo()
         # Base URL for images
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = params.get_param('web.base.url')
+
+        # Field Sync Toggles
+        sync_sku = params.get_param('odoo_sales_layer_connector.sl_sync_sku')
+        sync_ean = params.get_param('odoo_sales_layer_connector.sl_sync_ean')
+        sync_images = params.get_param('odoo_sales_layer_connector.sl_sync_images')
+        sync_categories = params.get_param('odoo_sales_layer_connector.sl_sync_categories')
+        sync_dimensions = params.get_param('odoo_sales_layer_connector.sl_sync_dimensions')
+        sync_descriptions = params.get_param('odoo_sales_layer_connector.sl_sync_descriptions')
+        sync_prices = params.get_param('odoo_sales_layer_connector.sl_sync_prices')
+        sync_attributes = params.get_param('odoo_sales_layer_connector.sl_sync_attributes')
 
         # Atributos del Padre (agrupados)
         attributes_data = []
-        for line in self.attribute_line_ids:
-            attributes_data.append({
-                'AttributeName': line.attribute_id.name,
-                'AttributeValues': ", ".join([v.name for v in line.value_ids])
-            })
+        if sync_attributes:
+            for line in self.attribute_line_ids:
+                attributes_data.append({
+                    'AttributeName': line.attribute_id.name,
+                    'AttributeValues': ", ".join([v.name for v in line.value_ids])
+                })
 
         # Variantes (Hijos) - OData Navigation Property 'Variants'
         variants_payload = []
@@ -91,32 +103,45 @@ class ProductTemplate(models.Model):
             for ptav in variant.product_template_attribute_value_ids:
                 variant_attrs.append(f"{ptav.attribute_id.name}: {ptav.name}")
             
-            variants_payload.append({
+            variant_data = {
                 'OdooID': str(variant.id),
-                'SKU': variant.default_code or '',
-                'EAN': variant.barcode or '',
                 'VariantDescription': ", ".join(variant_attrs),
-                'Price': float(variant.lst_price),
-                'Weight': float(variant.weight or 0.0),
-                'Volume': float(variant.volume or 0.0),
-            })
-
-        # Categoría
-        category_name = self.categ_id.complete_name if self.categ_id else 'Uncategorized'
+            }
+            if sync_sku:
+                variant_data['SKU'] = variant.default_code or ''
+            if sync_ean:
+                variant_data['EAN'] = variant.barcode or ''
+            if sync_prices:
+                variant_data['Price'] = float(variant.lst_price)
+            if sync_dimensions:
+                variant_data['Weight'] = float(variant.weight or 0.0)
+                variant_data['Volume'] = float(variant.volume or 0.0)
+            
+            variants_payload.append(variant_data)
 
         payload = {
             'OdooID': str(self.id),
             'Name': self.name,
-            'Description': self.description_sale or self.name,
-            'SKU': self.default_code or '',
-            'EAN': self.barcode or '',
-            'Category': category_name,
             'ProductType': self.type,
-            'Price': float(self.list_price),
-            'ImageURL': f"{base_url}/web/image/product.template/{self.id}/image_1920" if self.image_1920 else '',
-            'Attributes': attributes_data,
             'Variants': variants_payload,
         }
+
+        # Optional Fields
+        if sync_sku:
+            payload['SKU'] = self.default_code or ''
+        if sync_ean:
+            payload['EAN'] = self.barcode or ''
+        if sync_descriptions:
+            payload['Description'] = self.description_sale or self.name
+        if sync_categories:
+            payload['Category'] = self.categ_id.complete_name if self.categ_id else 'Uncategorized'
+        if sync_prices:
+            payload['Price'] = float(self.list_price)
+        if sync_images and self.image_1920:
+            payload['ImageURL'] = f"{base_url}/web/image/product.template/{self.id}/image_1920"
+        if sync_attributes:
+            payload['Attributes'] = attributes_data
+
         return payload
 
     def _sync_to_sales_layer(self):
