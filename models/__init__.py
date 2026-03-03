@@ -1,1 +1,1 @@
-from . import res_config_settings, product_template, product_product
+from . import res_config_settings, product_template, product_product, product_attribute

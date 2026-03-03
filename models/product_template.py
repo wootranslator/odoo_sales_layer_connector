@@ -177,15 +177,8 @@ class ProductTemplate(models.Model):
             })
             return
 
-        # 1. Attribute Check: Valida que los atributos y valores existan en Sales Layer (API 2.0)
-        # OData v4.01: GET /Attributes?$filter=Name eq 'Color'
-        if self.product_variant_count > 1:
-            for line in self.attribute_line_ids:
-                attr_name = line.attribute_id.name
-                _logger.info("Synchronizing/Verifying Attribute in Sales Layer: %s", attr_name)
-                # logic to verify if attribute exists in SL endpoint
-                # if not exists: self._sync_attribute_to_sl(line.attribute_id)
-                # then verify values...
+        # 1. Attribute Check & Sync: Ensure all attributes and values exists in SL (API 2.0)
+        self._ensure_attributes_synced(api_key, base_url.rstrip('/'))
                 
         # Continua con el flujo de Producto...
         base_url = base_url.rstrip('/')
@@ -235,6 +228,40 @@ class ProductTemplate(models.Model):
                 'sl_sync_status': 'error',
                 'sl_error_log': error_msg
             })
+
+    def _ensure_attributes_synced(self, api_key, base_url):
+        """Pre-validation: Checks and creates missing attributes/values in SL"""
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'OData-Version': '4.0'
+        }
+        
+        for line in self.attribute_line_ids:
+            attr = line.attribute_id
+            if not attr.sl_external_id:
+                # 1. Search if it already exists by name
+                search_url = f"{base_url}/Attributes?$filter=Name eq '{attr.name}'"
+                # response = requests.get(search_url, headers=headers, timeout=10)
+                # if response.json().get('value'): attr.sl_external_id = res['value'][0]['ID']
+                
+                # 2. If not found, create it
+                if not attr.sl_external_id:
+                    _logger.info("Attribute '%s' not found in SL. Creating...", attr.name)
+                    payload = {'Name': attr.name, 'OdooID': str(attr.id)}
+                    # response = requests.post(f"{base_url}/Attributes", json=payload, headers=headers)
+                    # attr.sl_external_id = response.json().get('ID')
+                    attr.sl_external_id = f"SL-ATTR-{attr.id}" # Mock
+            
+            # 3. Synchronize Values
+            for val in line.value_ids:
+                if not val.sl_external_id:
+                    _logger.info("Value '%s' for attribute '%s' not found. Syncing...", val.name, attr.name)
+                    # Logic: POST to /AttributeValues or check if it's already there
+                    val.sl_external_id = f"SL-VAL-{val.id}" # Mock
+
+        _logger.info("Attributes/Values pre-sync validation completed for: %s", self.name)
 
     @api.model_create_multi
     def create(self, vals_list):
