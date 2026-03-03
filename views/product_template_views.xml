@@ -1,75 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="product_template_sales_layer_form_view" model="ir.ui.view">
-            <field name="name">product.template.sales.layer.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="Sales Layer" name="sales_layer">
-                        <group>
-                            <group string="Exportación PIM">
-                                <field name="is_sl_sync"/>
-                                <field name="sl_sync_status" widget="badge" 
-                                       decoration-info="sl_sync_status == 'draft'" 
-                                       decoration-warning="sl_sync_status == 'pending'" 
-                                       decoration-success="sl_sync_status in ('synced', 'enriched')" 
-                                       decoration-danger="sl_sync_status == 'error'"/>
-                                <field name="sl_last_sync" readonly="1"/>
-                                <button name="action_sync_to_sales_layer" 
-                                        type="object" 
-                                        string="Sync to Sales Layer" 
-                                        class="btn-primary" 
-                                        invisible="not is_sl_sync"
-                                        help="Sincronizar manualmente este producto"/>
-                            </group>
-                            <group string="Detalles de Enlace">
-                                <field name="sl_external_id" readonly="1"/>
-                                <field name="sl_product_url" widget="url" text="Abrir en Sales Layer" invisible="not sl_product_url"/>
-                                <button name="action_check_sl_status" 
-                                        type="object" 
-                                        string="Check Remote Status" 
-                                        class="btn-secondary" 
-                                        invisible="not sl_external_id"
-                                        help="Consultar estado actual en Sales Layer"/>
-                            </group>
+    <record id="product_template_sales_layer_form_view" model="ir.ui.view">
+        <field name="name">product.template.sales.layer.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Sales Layer" name="sales_layer">
+                    <group>
+                        <group string="Exportación PIM">
+                            <field name="is_sl_sync"/>
+                            <field name="sl_sync_status" widget="badge" 
+                                   decoration-info="sl_sync_status == 'draft'" 
+                                   decoration-warning="sl_sync_status == 'pending'" 
+                                   decoration-success="sl_sync_status in ('synced', 'enriched')" 
+                                   decoration-danger="sl_sync_status == 'error'"/>
+                            <field name="sl_last_sync" readonly="1"/>
+                            <button name="action_sync_to_sales_layer" 
+                                    type="object" 
+                                    string="Sync to Sales Layer" 
+                                    class="btn-primary" 
+                                    invisible="not is_sl_sync"
+                                    help="Sincronizar manualmente este producto"/>
                         </group>
-                        <group string="Registro de Errores" invisible="not sl_error_log">
-                            <field name="sl_error_log" nolabel="1" readonly="1"/>
+                        <group string="Detalles de Enlace">
+                            <field name="sl_external_id" readonly="1"/>
+                            <field name="sl_product_url" widget="url" text="Abrir en Sales Layer" invisible="not sl_product_url"/>
+                            <button name="action_check_sl_status" 
+                                    type="object" 
+                                    string="Check Remote Status" 
+                                    class="btn-secondary" 
+                                    invisible="not sl_external_id"
+                                    help="Consultar estado actual en Sales Layer"/>
                         </group>
-                    </page>
-                </xpath>
-            </field>
-        </record>
+                    </group>
+                    <group string="Registro de Errores" invisible="not sl_error_log">
+                        <field name="sl_error_log" nolabel="1" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
-        <record id="product_product_sales_layer_form_view" model="ir.ui.view">
-            <field name="name">product.product.sales.layer.form</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="Sales Layer" name="sales_layer">
-                        <group>
-                            <group string="Sincronización PIM (vía Plantilla)">
-                                <field name="is_sl_sync" readonly="1"/>
-                            </group>
-                            <group string="Información Sales Layer">
-                                <field name="sl_sync_status" widget="badge" 
-                                       decoration-info="sl_sync_status == 'draft'" 
-                                       decoration-warning="sl_sync_status == 'pending'" 
-                                       decoration-success="sl_sync_status in ('synced', 'enriched')" 
-                                       decoration-danger="sl_sync_status == 'error'"/>
-                                <field name="sl_last_sync" readonly="1"/>
-                                <field name="sl_external_id" readonly="1"/>
-                            </group>
+    <record id="product_product_sales_layer_form_view" model="ir.ui.view">
+        <field name="name">product.product.sales.layer.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Sales Layer" name="sales_layer">
+                    <group>
+                        <group string="Sincronización PIM (vía Plantilla)">
+                            <field name="is_sl_sync" readonly="1"/>
                         </group>
-                        <p class="text-muted">
-                            * La sincronización con Sales Layer se gestiona a nivel de Plantilla de Producto.
-                        </p>
-                    </page>
-                </xpath>
-            </field>
-        </record>
-    </data>
+                        <group string="Información Sales Layer">
+                            <field name="sl_sync_status" widget="badge" 
+                                   decoration-info="sl_sync_status == 'draft'" 
+                                   decoration-warning="sl_sync_status == 'pending'" 
+                                   decoration-success="sl_sync_status in ('synced', 'enriched')" 
+                                   decoration-danger="sl_sync_status == 'error'"/>
+                            <field name="sl_last_sync" readonly="1"/>
+                            <field name="sl_external_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        * La sincronización con Sales Layer se gestiona a nivel de Plantilla de Producto.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>
