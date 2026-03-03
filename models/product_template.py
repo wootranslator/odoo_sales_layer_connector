@@ -41,20 +41,25 @@ class ProductTemplate(models.Model):
             record._sync_to_sales_layer()
 
     def action_check_sl_status(self):
-        """Metodo manual para consultar el estado en Sales Layer"""
+        """Metodo manual para consultar el estado en Sales Layer (API 2.0)"""
         self.ensure_one()
         params = self.env['ir.config_parameter'].sudo()
         api_key = params.get_param('odoo_sales_layer_connector.sl_api_key')
-        connector_id = params.get_param('odoo_sales_layer_connector.sl_connector_id')
+        base_url = params.get_param('odoo_sales_layer_connector.sl_base_url')
         
-        if not api_key or not self.sl_external_id:
+        if not api_key or not self.sl_external_id or not base_url:
             return
 
-        # Mockup de llamada GET
-        # api_endpoint = f"https://api.saleslayer.com/v1/items/{self.sl_external_id}"
-        # response = requests.get(api_endpoint, headers={'Authorization': f'Bearer {api_key}'})
+        # OData v4.01 GET request
+        base_url = base_url.rstrip('/')
+        api_endpoint = f"{base_url}/Products('{self.sl_external_id}')"
         
-        _logger.info(f"Checking status for {self.sl_external_id}")
+        _logger.info(f"Checking status for {self.sl_external_id} at {api_endpoint}")
+        
+        # En una implementacion real:
+        # headers = {'Authorization': f'Bearer {api_key}', 'Accept': 'application/json'}
+        # response = requests.get(api_endpoint, headers=headers, timeout=10)
+        
         # Supongamos que refrescamos y está completado
         if self.sl_status == 'synced':
             self.write({'sl_status': 'enriched', 'sl_enrichment_level': 'completed'})
@@ -105,33 +110,49 @@ class ProductTemplate(models.Model):
 
         params = self.env['ir.config_parameter'].sudo()
         api_key = params.get_param('odoo_sales_layer_connector.sl_api_key')
-        connector_id = params.get_param('odoo_sales_layer_connector.sl_connector_id')
+        base_url = params.get_param('odoo_sales_layer_connector.sl_base_url')
         
-        if not api_key or not connector_id:
+        if not api_key or not base_url:
             self.write({
                 'sl_status': 'error',
-                'sl_last_error': _("Falta configuración de API Key o Connector ID.")
+                'sl_last_error': _("Falta configuración de API Key o Base URL.")
             })
             return
 
-        # Prepare product data with variants hierarchy
+        # API 2.0 Endpoint for Products
+        # OData v4.01: POST for creation, PATCH for update
+        base_url = base_url.rstrip('/')
+        endpoint = f"{base_url}/Products"
+        
         payload = self._prepare_sl_payload()
 
-        # API Mockup using requests
-        # Sales Layer API typically uses a specific structure. 
-        # Here we follow the requirement to use 'requests' and handle 200/201.
-        
-        # Use a dummy URL if not specified, though normally we'd use base_url or a specific API endpoint.
-        api_endpoint = "https://api.saleslayer.com/v1/items" # Placeholder
-        
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'OData-Version': '4.0',
+            'OData-MaxVersion': '4.0'
+        }
+
         try:
-            _logger.info("Syncing to Sales Layer: %s", json.dumps(payload, indent=2))
+            _logger.info("API 2.0 Syncing to Sales Layer: %s", json.dumps(payload, indent=2))
             
-            # Simulamos el envío
-            # response = requests.post(api_endpoint, json=payload, headers={'Authorization': f'Bearer {api_key}'})
+            if self.sl_external_id:
+                # Update existing record (PATCH)
+                update_url = f"{endpoint}('{self.sl_external_id}')"
+                # response = requests.patch(update_url, json=payload, headers=headers, timeout=15)
+                method = "PATCH"
+                final_url = update_url
+            else:
+                # Create new record (POST)
+                # response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+                method = "POST"
+                final_url = endpoint
             
-            # Simulación de respuesta exitosa
-            mock_external_id = f"SL-{self.id}" 
+            _logger.info(f"Method: {method} to {final_url}")
+            
+            # Simulamos éxito y asignación de ID
+            mock_external_id = self.sl_external_id or f"SL2-{self.id}" 
             
             self.write({
                 'sl_external_id': mock_external_id,
@@ -140,6 +161,7 @@ class ProductTemplate(models.Model):
             })
             
         except Exception as e:
+            _logger.error("Error in Sales Layer API 2.0 Sync: %s", str(e))
             self.write({
                 'sl_status': 'error',
                 'sl_last_error': str(e)

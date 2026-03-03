@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Connector View -->
+    <record id="view_temu_connector_tree" model="ir.ui.view">
+        <field name="name">temu.connector.tree</field>
+        <field name="model">temu.connector</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="api_url"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_temu_connector_form" model="ir.ui.view">
+        <field name="name">temu.connector.form</field>
+        <field name="model">temu.connector</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" invisible="state == 'confirmed'"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Marketplace Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="API CREDENTIALS">
+                            <field name="client_id"/>
+                            <field name="client_secret" password="1"/>
+                            <field name="access_token"/>
+                        </group>
+                        <group string="ENDPOINT">
+                            <field name="environment" widget="radio" options="{'horizontal': True}"/>
+                            <field name="api_url"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Workflow">
+                            <group string="AUTOMATION">
+                                <field name="auto_confirm_paid_orders"/>
+                                <field name="order_prefix"/>
+                                <field name="price_source"/>
+                                <field name="pricelist_id" invisible="price_source != 'pricelist'"/>
+                            </group>
+                        </page>
+                        <page string="Product Mapping">
+                            <group>
+                                <p>Manage SKU mappings in the Mappings menu.</p>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_temu_connector_kanban" model="ir.ui.view">
+        <field name="name">temu.connector.kanban</field>
+        <field name="model">temu.connector</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard" create="true">
+                <field name="name"/>
+                <field name="pending_orders_count"/>
+                <field name="shipped_orders_count"/>
+                <field name="total_orders_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_primary_left">
+                                        <button class="btn btn-primary" name="get_formview_action" type="object">
+                                            Configuration
+                                        </button>
+                                    </div>
+                                    <div class="col-6 o_kanban_primary_right">
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <a name="%(sale.action_orders)d" type="action" context="{'search_default_draft': 1, 'search_default_is_temu_order': 1}">
+                                                    Pending
+                                                </a>
+                                            </div>
+                                            <div class="col-3 text-right">
+                                                <field name="pending_orders_count"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <a name="%(sale.action_orders)d" type="action" context="{'search_default_is_temu_order': 1}">
+                                                    Total Orders
+                                                </a>
+                                            </div>
+                                            <div class="col-3 text-right">
+                                                <field name="total_orders_count"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_temu_connector" model="ir.actions.act_window">
+        <field name="name">Marketplaces Dashboard</field>
+        <field name="res_model">temu.connector</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- Specific Sale Order View for Temu -->
+    <record id="action_temu_orders" model="ir.actions.act_window">
+        <field name="name">Temu Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('is_temu_order', '=', True)]</field>
+        <field name="context">{'default_is_temu_order': True}</field>
+    </record>
+
+    <!-- Mapping Views -->
+    <record id="view_temu_mapping_product_tree" model="ir.ui.view">
+        <field name="name">temu.mapping.product.tree</field>
+        <field name="model">temu.mapping.product</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="connector_id"/>
+                <field name="temu_sku"/>
+                <field name="product_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_temu_mapping_product" model="ir.actions.act_window">
+        <field name="name">SKU Mappings</field>
+        <field name="res_model">temu.mapping.product</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="action_temu_mapping_shipping" model="ir.actions.act_window">
+        <field name="name">Shipping Mappings</field>
+        <field name="res_model">temu.mapping.shipping</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="action_temu_mapping_tax" model="ir.actions.act_window">
+        <field name="name">Tax Mappings</field>
+        <field name="res_model">temu.mapping.tax</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_temu_root" name="Temu Integration" sequence="10" web_icon="temu_odoo_integration,static/description/icon.png"/>
+    <menuitem id="menu_temu_config" name="Configuration" parent="menu_temu_root" sequence="100"/>
+    <menuitem id="menu_temu_connector" name="Marketplaces" parent="menu_temu_config" action="action_temu_connector" sequence="10"/>
+    
+    <menuitem id="menu_temu_mappings" name="Mappings" parent="menu_temu_root" sequence="20"/>
+    <menuitem id="menu_temu_mapping_product" name="SKU Mappings" parent="menu_temu_mappings" action="action_temu_mapping_product" sequence="10"/>
+    <menuitem id="menu_temu_mapping_shipping" name="Shipping Mappings" parent="menu_temu_mappings" action="action_temu_mapping_shipping" sequence="20"/>
+    <menuitem id="menu_temu_mapping_fiscal" name="Fiscal Mappings" parent="menu_temu_mappings" action="action_temu_mapping_product" sequence="30"/>
+    <menuitem id="menu_temu_mapping_tax" name="Tax Mappings" parent="menu_temu_mappings" action="action_temu_mapping_tax" sequence="40"/>
+</odoo>

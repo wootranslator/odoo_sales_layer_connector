@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_temu_dummy_wizard_form" model="ir.ui.view">
+        <field name="name">temu.dummy.wizard.form</field>
+        <field name="model">temu.dummy.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Welcome to Temu Integration">
+                <p class="oe_grey">
+                    Would you like to install dummy data to test the integration? 
+                    This will create a sample Marketplace and a Sale Order.
+                </p>
+                <footer>
+                    <button name="action_install_dummy_data" string="Yes, Install Dummy Data" type="object" class="btn-primary"/>
+                    <button string="No, Thanks" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_temu_dummy_wizard" model="ir.actions.act_window">
+        <field name="name">Welcome to Temu</field>
+        <field name="res_model">temu.dummy.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

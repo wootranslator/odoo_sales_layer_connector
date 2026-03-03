@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThaiDrive - Thai Driving License Practice</title>
+    <meta name="description"
+        content="Prepare for your Thai Driving License theory exam with our comprehensive English-language practice tests. 500+ questions, real exam simulation, and category-based learning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-theme">
+    <div id="app">
+        <!-- Dashboard / Home View -->
+        <main id="main-content">
+            <header class="app-header">
+                <div class="logo">
+                    <span class="logo-icon">🚗</span>
+                    <span class="logo-text">ThaiDrive<span class="accent">.</span></span>
+                </div>
+                <nav class="main-nav">
+                    <button id="nav-home" class="nav-link active">Home</button>
+                    <button id="nav-signs" class="nav-link">Signs</button>
+                    <button id="nav-history" class="nav-link">History</button>
+                </nav>
+            </header>
+
+            <section id="hero" class="fade-in">
+                <div class="hero-content">
+                    <h1>Master the Thai Driving <br><span class="gradient-text">Theory Exam</span></h1>
+                    <p>Comprehensive practice tests in English for foreigners. Approved question bank, real exam format,
+                        and detailed explanations.</p>
+                    <div class="hero-actions">
+                        <button id="start-exam-btn" class="btn btn-primary btn-lg">Start Mock Exam</button>
+                        <button id="practice-btn" class="btn btn-secondary btn-lg">Practice Mode</button>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card glass">
+                        <span class="stat-value">50</span>
+                        <span class="stat-label">Questions</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-value">90%</span>
+                        <span class="stat-label">Pass Score</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-value">60</span>
+                        <span class="stat-label">Minutes</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="categories" class="fade-in">
+                <h2 class="section-title">Study by Category</h2>
+                <div class="category-grid">
+                    <div class="category-card glass clickable" data-category="traffic-laws">
+                        <div class="category-icon">⚖️</div>
+                        <h3>Traffic Laws</h3>
+                        <p>Essential rules and legal requirements for driving in Thailand.</p>
+                    </div>
+                    <div class="category-card glass clickable" data-category="traffic-signs">
+                        <div class="category-icon">🛑</div>
+                        <h3>Traffic Signs</h3>
+                        <p>Warning, regulatory, and mandatory road signs and markings.</p>
+                    </div>
+                    <div class="category-card glass clickable" data-category="safe-driving">
+                        <div class="category-icon">🛡️</div>
+                        <h3>Safe Driving</h3>
+                        <p>Defensive driving techniques and hazard perception.</p>
+                    </div>
+                    <div class="category-card glass clickable" data-category="maintenance">
+                        <div class="category-icon">🔧</div>
+                        <h3>Maintenance</h3>
+                        <p>Basic vehicle checks and emergency procedures.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Signs Library View (Initially hidden inside main) -->
+            <section id="signs-section" class="hidden fade-in">
+                <h2 class="section-title">Traffic Signs Library</h2>
+                <div class="signs-filter">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="warning">Warning</button>
+                    <button class="filter-btn" data-filter="regulatory">Regulatory</button>
+                    <button class="filter-btn" data-filter="mandatory">Mandatory</button>
+                </div>
+                <div id="signs-grid" class="signs-grid">
+                    <!-- Dynamic Sign Cards -->
+                </div>
+            </section>
+
+            <!-- History View (Initially hidden inside main) -->
+            <section id="history-section" class="hidden fade-in">
+                <h2 class="section-title">Your Progress</h2>
+                <div class="history-container glass">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mode</th>
+                                <th>Score</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list">
+                            <!-- Dynamic History Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Quiz View (Hidden by default) -->
+        <section id="quiz-view" class="hidden">
+            <div class="quiz-container">
+                <header class="quiz-header glass">
+                    <button id="exit-quiz" class="btn-icon">✕</button>
+                    <div class="quiz-progress-wrapper">
+                        <div class="progress-info">
+                            <span id="question-number">Question 1/50</span>
+                            <span id="quiz-timer">60:00</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                        </div>
+                    </div>
+                </header>
+
+                <div id="question-card" class="question-card glass fade-in">
+                    <!-- Dynamic Question Content -->
+                </div>
+
+                <div class="quiz-footer">
+                    <button id="prev-btn" class="btn btn-ghost" disabled>Previous</button>
+                    <button id="next-btn" class="btn btn-primary">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results View (Hidden by default) -->
+        <section id="results-view" class="hidden">
+            <div class="results-container glass fade-in">
+                <div id="status-icon" class="result-status-icon">🏆</div>
+                <h2 id="result-title">Congratulations!</h2>
+                <p id="result-message">You passed the mock exam with flying colors.</p>
+
+                <div class="score-circle">
+                    <span id="final-score">48/50</span>
+                    <span class="score-percentage" id="final-percentage">96%</span>
+                </div>
+
+                <div class="results-summary">
+                    <div class="summary-item">
+                        <span class="label">Time Taken</span>
+                        <span class="value" id="result-time">42:15</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Correct</span>
+                        <span class="value success" id="result-correct">48</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Incorrect</span>
+                        <span class="value error" id="result-incorrect">2</span>
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <button id="restart-btn" class="btn btn-primary">Try Again</button>
+                    <button id="back-home-btn" class="btn btn-secondary">Back to Dashboard</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

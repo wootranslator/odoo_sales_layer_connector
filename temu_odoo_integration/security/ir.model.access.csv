@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_temu_connector,temu.connector,model_temu_connector,base.group_user,1,1,1,1
+access_temu_mapping_product,temu.mapping.product,model_temu_mapping_product,base.group_user,1,1,1,1
+access_temu_mapping_fiscal,temu.mapping.fiscal,model_temu_mapping_fiscal,base.group_user,1,1,1,1
+access_temu_mapping_payment,temu.mapping.payment,model_temu_mapping_payment,base.group_user,1,1,1,1
+access_temu_mapping_shipping,temu.mapping.shipping,model_temu_mapping_shipping,base.group_user,1,1,1,1
+access_temu_mapping_tax,temu.mapping.tax,model_temu_mapping_tax,base.group_user,1,1,1,1
+access_temu_order_import,temu.order.import,model_temu_order_import,base.group_user,1,1,1,1

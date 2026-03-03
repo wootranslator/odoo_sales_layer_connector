@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_temu_order_import_form" model="ir.ui.view">
+        <field name="name">temu.order.import.form</field>
+        <field name="model">temu.order.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Temu Orders">
+                <group>
+                    <field name="connector_id"/>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_import_orders" string="Import" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_temu_order_import" model="ir.actions.act_window">
+        <field name="name">Import Temu Orders</field>
+        <field name="res_model">temu.order.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_temu_operations" name="Orders" parent="menu_temu_root" sequence="10"/>
+    <menuitem id="menu_temu_orders" name="Temu Orders" parent="menu_temu_operations" action="action_temu_orders" sequence="5"/>
+    <menuitem id="menu_temu_order_import" name="Import Orders" parent="menu_temu_operations" action="action_temu_order_import" sequence="10"/>
+</odoo>
