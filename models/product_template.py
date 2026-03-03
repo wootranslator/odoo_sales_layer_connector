@@ -26,11 +26,16 @@ class ProductTemplate(models.Model):
 
     @api.depends('sl_external_id')
     def _compute_sl_url(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('odoo_sales_layer_connector.sl_base_url')
+        # Base URL for the public app might differ from the API URL, but we use the config one.
+        # Usually: https://app.saleslayer.com/product/ID
+        params = self.env['ir.config_parameter'].sudo()
+        api_base = params.get_param('odoo_sales_layer_connector.sl_base_url') or 'https://api2.saleslayer.com/rest/Catalog'
+        # Basic guess for the app URL if it's the API one
+        app_url = api_base.replace('api2', 'app').replace('/rest/Catalog', '')
+        
         for record in self:
-            if record.sl_external_id and base_url:
-                url_trimmed = base_url.rstrip('/')
-                record.sl_url = f"{url_trimmed}/{record.sl_external_id}"
+            if record.sl_external_id:
+                record.sl_url = f"{app_url}/product/{record.sl_external_id}"
             else:
                 record.sl_url = False
 
@@ -65,41 +70,52 @@ class ProductTemplate(models.Model):
             self.write({'sl_status': 'enriched', 'sl_enrichment_level': 'completed'})
 
     def _prepare_sl_payload(self):
-        """Genera el JSON estructurado para el Padre y sus Variantes"""
+        """Genera el JSON estructurado para el Padre y sus Variantes (OData v4.01)"""
         self.ensure_one()
         
-        # Atributos del Padre
-        attributes = []
+        # Base URL for images
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        # Atributos del Padre (agrupados)
+        attributes_data = []
         for line in self.attribute_line_ids:
-            attributes.append({
-                'name': line.attribute_id.name,
-                'values': [v.name for v in line.value_ids]
+            attributes_data.append({
+                'AttributeName': line.attribute_id.name,
+                'AttributeValues': ", ".join([v.name for v in line.value_ids])
             })
 
-        # Variantes (Hijos)
-        variants = []
+        # Variantes (Hijos) - OData Navigation Property 'Variants'
+        variants_payload = []
         for variant in self.product_variant_ids:
-            # Combinación de atributos para esta variante
             variant_attrs = []
             for ptav in variant.product_template_attribute_value_ids:
                 variant_attrs.append(f"{ptav.attribute_id.name}: {ptav.name}")
             
-            variants.append({
-                'id_odoo': variant.id,
-                'sku': variant.default_code or '',
-                'ean': variant.barcode or '',
-                'combination': ", ".join(variant_attrs),
-                'price': variant.lst_price,
+            variants_payload.append({
+                'OdooID': str(variant.id),
+                'SKU': variant.default_code or '',
+                'EAN': variant.barcode or '',
+                'VariantDescription': ", ".join(variant_attrs),
+                'Price': float(variant.lst_price),
+                'Weight': float(variant.weight or 0.0),
+                'Volume': float(variant.volume or 0.0),
             })
 
+        # Categoría
+        category_name = self.categ_id.complete_name if self.categ_id else 'Uncategorized'
+
         payload = {
-            'id_odoo': self.id,
-            'name': self.name,
-            'default_code': self.default_code or '',
-            'barcode': self.barcode or '',
-            'attributes': attributes,
-            'variants': variants,
-            'type': 'product_with_variants'
+            'OdooID': str(self.id),
+            'Name': self.name,
+            'Description': self.description_sale or self.name,
+            'SKU': self.default_code or '',
+            'EAN': self.barcode or '',
+            'Category': category_name,
+            'ProductType': self.type,
+            'Price': float(self.list_price),
+            'ImageURL': f"{base_url}/web/image/product.template/{self.id}/image_1920" if self.image_1920 else '',
+            'Attributes': attributes_data,
+            'Variants': variants_payload,
         }
         return payload
 
