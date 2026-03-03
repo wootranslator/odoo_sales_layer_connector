@@ -4,11 +4,13 @@
     'category': 'Inventory/Inventory',
     'summary': 'Sincronización de variantes con Sales Layer PIM',
     'author': 'Tu Nombre/Empresa',
-    'depends': ['product', 'mail'],
+    'depends': ['product', 'stock', 'mail'],
     'data': [
+        'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
+        'views/product_template_views.xml',
     ],
     'installable': True,
-    'application': False,
+    'application': True,
     'license': 'LGPL-3',
 }

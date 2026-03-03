@@ -1,3 +1,1 @@
-# -*- coding: utf-8 -*-
-from . import res_config_settings
-from . import product_product
+from . import res_config_settings, product_template, product_product

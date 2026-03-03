@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_sales_layer_form_view" model="ir.ui.view">
+        <field name="name">product.template.sales.layer.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Sales Layer" name="sales_layer">
+                    <group>
+                        <group string="Sincronización">
+                            <field name="is_sl_sync"/>
+                            <button name="action_sync_to_sales_layer" 
+                                    type="object" 
+                                    string="Sync Now" 
+                                    class="btn-primary" 
+                                    invisible="not is_sl_sync"
+                                    help="Sincronizar manualmente este producto con Sales Layer"/>
+                        </group>
+                        <group string="Información Sales Layer">
+                            <field name="sl_status" widget="badge" 
+                                   decoration-info="sl_status == 'draft'" 
+                                   decoration-warning="sl_status == 'synced'" 
+                                   decoration-success="sl_status == 'enriched'" 
+                                   decoration-danger="sl_status == 'error'"/>
+                            <field name="sl_enrichment_level" widget="badge"
+                                   decoration-muted="sl_enrichment_level == 'basic'"
+                                   decoration-info="sl_enrichment_level == 'in_progress'"
+                                   decoration-success="sl_enrichment_level == 'completed'"/>
+                            <field name="sl_external_id" readonly="1"/>
+                            <field name="sl_url" widget="url" text="Ver en Sales Layer" invisible="not sl_url"/>
+                            <button name="action_check_sl_status" 
+                                    type="object" 
+                                    string="Check Status" 
+                                    class="btn-secondary" 
+                                    invisible="not sl_external_id"
+                                    help="Consultar estado actual en Sales Layer"/>
+                        </group>
+                    </group>
+                    <group string="Registro de Errores" invisible="not sl_last_error">
+                        <field name="sl_last_error" nolabel="1" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

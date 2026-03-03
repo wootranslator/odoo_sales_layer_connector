@@ -3,20 +3,36 @@
     <record id="res_config_settings_view_form_sl" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.sl</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form" position="inside">
-                <app data-string="Sales Layer" string="Sales Layer" name="sales_layer">
-                    <block title="Configuración Sales Layer">
-                        <setting string="API Credentials">
-                            <field name="sl_api_url"/>
-                            <field name="sl_api_token" password="True"/>
-                        </setting>
-                        <setting string="Webhook Security">
-                            <field name="sl_webhook_token" password="True"/>
-                        </setting>
-                    </block>
-                </app>
+            <xpath expr="//app[@name='stock']" position="inside">
+                <block title="Sales Layer Connector" id="sl_connector_setting_block">
+                    <setting string="API Configuration" help="Configure your Sales Layer API credentials">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="sl_api_key" class="col-lg-3 o_light_label"/>
+                                <field name="sl_api_key" password="True"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="sl_connector_id" class="col-lg-3 o_light_label"/>
+                                <field name="sl_connector_id"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="sl_base_url" class="col-lg-3 o_light_label"/>
+                                <field name="sl_base_url"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting string="Sync Settings" help="Configure how products are synced">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="sl_sync_trigger" class="col-lg-3 o_light_label"/>
+                                <field name="sl_sync_trigger"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>
