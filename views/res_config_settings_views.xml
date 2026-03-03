@@ -30,11 +30,10 @@
                         </setting>
                     </block>
                     <block title="Export Mapping">
-                        <setting string="Data Fields">
+                        <setting string="Fields">
                             <field name="sl_sync_sku"/>
                             <field name="sl_sync_ean"/>
                             <field name="sl_sync_images"/>
-                            <field name="sl_sync_categories"/>
                             <field name="sl_sync_prices"/>
                             <field name="sl_sync_attributes"/>
                         </setting>
