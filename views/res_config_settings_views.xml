@@ -9,16 +9,34 @@
                 <app data-string="Sales Layer" string="Sales Layer" name="odoo_sales_layer_connector" groups="stock.group_stock_manager">
                     <block title="API Configuration" id="sl_connector_setting_block">
                         <setting string="Credentials">
-                            <field name="sl_api_key" password="True"/>
-                            <field name="sl_secret_key" password="True"/>
-                            <field name="sl_connector_id"/>
-                            <field name="sl_base_url"/>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="sl_api_key" class="col-lg-3 o_light_label"/>
+                                    <field name="sl_api_key" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="sl_secret_key" class="col-lg-3 o_light_label"/>
+                                    <field name="sl_secret_key" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="sl_connector_id" class="col-lg-3 o_light_label"/>
+                                    <field name="sl_connector_id"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="sl_base_url" class="col-lg-3 o_light_label"/>
+                                    <field name="sl_base_url"/>
+                                </div>
+                            </div>
                         </setting>
                     </block>
                     <block title="Export Mapping">
-                        <setting string="Fields">
+                        <setting string="Data Fields">
                             <field name="sl_sync_sku"/>
                             <field name="sl_sync_ean"/>
+                            <field name="sl_sync_images"/>
+                            <field name="sl_sync_categories"/>
+                            <field name="sl_sync_prices"/>
+                            <field name="sl_sync_attributes"/>
                         </setting>
                     </block>
                 </app>
