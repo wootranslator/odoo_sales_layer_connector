@@ -6,6 +6,21 @@ _logger = logging.getLogger(__name__)
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
+    def action_sync_to_sales_layer(self):
+        """Delegar la sincronización a la plantilla"""
+        self.ensure_one()
+        return self.product_tmpl_id.action_sync_to_sales_layer()
+
+    def action_sync_to_sl(self):
+        """Delegar a la plantilla"""
+        self.ensure_one()
+        return self.product_tmpl_id.action_sync_to_sl()
+
+    def action_check_sl_status(self):
+        """Delegar el chequeo de estado a la plantilla"""
+        self.ensure_one()
+        return self.product_tmpl_id.action_check_sl_status()
+
     @api.model_create_multi
     def create(self, vals_list):
         products = super().create(vals_list)

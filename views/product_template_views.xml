@@ -54,11 +54,12 @@
                             <field name="is_sl_sync" readonly="1"/>
                         </group>
                         <group string="Información Sales Layer">
-                            <field name="sl_status" widget="badge" 
-                                   decoration-info="sl_status == 'draft'" 
-                                   decoration-warning="sl_status == 'synced'" 
-                                   decoration-success="sl_status == 'enriched'" 
-                                   decoration-danger="sl_status == 'error'"/>
+                            <field name="sl_sync_status" widget="badge" 
+                                   decoration-info="sl_sync_status == 'draft'" 
+                                   decoration-warning="sl_sync_status == 'pending'" 
+                                   decoration-success="sl_sync_status in ('synced', 'enriched')" 
+                                   decoration-danger="sl_sync_status == 'error'"/>
+                            <field name="sl_last_sync" readonly="1"/>
                             <field name="sl_external_id" readonly="1"/>
                         </group>
                     </group>
