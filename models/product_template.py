@@ -86,6 +86,7 @@ class ProductTemplate(models.Model):
         sync_descriptions = params.get_param('odoo_sales_layer_connector.sl_sync_descriptions')
         sync_prices = params.get_param('odoo_sales_layer_connector.sl_sync_prices')
         sync_attributes = params.get_param('odoo_sales_layer_connector.sl_sync_attributes')
+        sync_quantity = params.get_param('odoo_sales_layer_connector.sl_sync_quantity')
 
         # Atributos del Padre (agrupados)
         attributes_data = []
@@ -116,6 +117,8 @@ class ProductTemplate(models.Model):
             if sync_dimensions:
                 variant_data['Weight'] = float(variant.weight or 0.0)
                 variant_data['Volume'] = float(variant.volume or 0.0)
+            if sync_quantity:
+                variant_data['FreeQuantity'] = float(variant.free_qty or 0.0)
             
             variants_payload.append(variant_data)
 
@@ -141,6 +144,8 @@ class ProductTemplate(models.Model):
             payload['ImageURL'] = f"{base_url}/web/image/product.template/{self.id}/image_1920"
         if sync_attributes:
             payload['Attributes'] = attributes_data
+        if sync_quantity:
+            payload['FreeQuantity'] = float(self.free_qty or 0.0)
 
         return payload
 
