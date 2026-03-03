@@ -38,7 +38,6 @@
                             </div>
                         </setting>
                     </block>
-
                     <block title="Field Export Mapping (Odoo -> Sales Layer)" id="sl_field_export_mapping_block">
                         <setting string="Data Fields" help="Toggle which fields are sent to Sales Layer">
                             <div class="content-group">
@@ -87,7 +86,6 @@
                             </div>
                         </setting>
                     </block>
-
                     <block title="Field Import Mapping (Sales Layer -> Odoo)" id="sl_field_import_mapping_block">
                         <setting string="Data Fields" help="Toggle which fields are updated from Sales Layer">
                             <div class="content-group">

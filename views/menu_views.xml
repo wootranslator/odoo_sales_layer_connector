@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Top-level Menu Action: List of Products to Sync -->
     <record id="action_product_template_sl" model="ir.actions.act_window">
         <field name="name">Products for Sales Layer</field>
         <field name="res_model">product.template</field>
@@ -17,21 +16,18 @@
         </field>
     </record>
 
-    <!-- Top-level Menu Root -->
     <menuitem id="menu_sl_root" 
               name="Sales Layer" 
               web_icon="odoo_sales_layer_connector,static/description/icon.png"
               groups="stock.group_stock_manager"
               sequence="100"/>
 
-    <!-- Dashboard/Products sub-menu -->
     <menuitem id="menu_sl_products" 
               name="Products" 
               parent="menu_sl_root" 
               action="action_product_template_sl"
               sequence="10"/>
 
-    <!-- Settings sub-menu -->
     <menuitem id="menu_sl_config" 
               name="Configuration" 
               parent="menu_sl_root" 
